@@ -93,14 +93,14 @@ class UserAPI:
         @token_required()
         def get(self, _):
             print('here')
-            # print("here")
-            # print("ANKITBADBOY"*20)
-            # token = request.cookies.get("jwt")
-            # cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid'] # current user
-            # users = User.query.all()
-            # for user in users:
-            #     if user.uid == cur_user:
-            #         return jsonify(user.getprofile())
+            print("here")
+            print("ANKITBADBOY"*20)
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid'] # current user
+            users = User.query.all()
+            for user in users:
+                if user.uid == cur_user:
+                    return jsonify(user.getprofile())
                 
                 
     class _Security(Resource):
