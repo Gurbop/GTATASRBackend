@@ -224,6 +224,7 @@ class User(db.Model):
 
 # Builds working data for testing
 def initUsers():
+    print('here')
     with app.app_context():
         """Create database and tables"""
         db.create_all()
@@ -233,6 +234,7 @@ def initUsers():
         u3 = User(name='Alexander Graham Bell', uid='lex', hashmap={"job": "inventor", "company": "ATT"})
         u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9), hashmap={"job": "inventor", "company": "Navy"})
         users = [u1, u2, u3, u4]
+        print("here")
 
         """Builds sample user/note(s) data"""
         for user in users:

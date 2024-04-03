@@ -16,6 +16,7 @@ class UserAPI:
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
             ''' Read data for json body '''
+            print("I MILLY ROCK")
             body = request.get_json()
             
             ''' Avoid garbage in, error checking '''
