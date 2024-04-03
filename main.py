@@ -14,11 +14,9 @@ from api.covid import covid_api # Blueprint import api definition
 from api.joke import joke_api # Blueprint import api definition
 from api.user import user_api # Blueprint import api definition
 from api.player import player_api
-from api.titanic import titanic_api
 # database migrations
 from model.users import initUsers
 from model.players import initPlayers
-from model.titanicML import initTitanic
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -32,7 +30,6 @@ app.register_blueprint(joke_api) # register api routes
 app.register_blueprint(covid_api) # register api routes
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(player_api)
-app.register_blueprint(titanic_api) # register api routes
 app.register_blueprint(app_projects) # register app pages
 
 @app.errorhandler(404)  # catch for URL not found
@@ -48,6 +45,15 @@ def index():
 def table():
     return render_template("table.html")
 
+@app.before_request
+def before_request():
+    # Check if the request came from a specific origin
+    allowed_origin = request.headers.get('Origin')
+    print(allowed_origin)
+    print("-"*50)
+    if allowed_origin in ['localhost:4200', 'http://127.0.0.1:4200', 'https://nighthawkcoders.github.io']:
+        cors._origins = allowed_origin
+    cors._origins = allowed_origin
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
 
@@ -56,7 +62,6 @@ custom_cli = AppGroup('custom', help='Custom commands')
 def generate_data():
     initUsers()
     initPlayers()
-    initTitanic()
 
 # Register the custom command group with the Flask application
 app.cli.add_command(custom_cli)
@@ -105,4 +110,9 @@ def get_leaderboard():
 # this runs the application on the development server
 if __name__ == "__main__":
     # change name for testing
-    app.run(debug=True, host="0.0.0.0", port="8086")
+    print('here')
+    app.run(debug=True, host="0.0.0.0", port="8085")
+# server always runs on the address http://127.0.0.1:8086/
+# http://127.0.0.1:8086/api/users/search
+# http://127.0.0.1:8086/api/users/design
+# http://127.0.0.1:8086/api/users/authenticate

@@ -23,7 +23,7 @@ class Post(db.Model):
     userID = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # Constructor of a Notes object, initializes of instance variables within object
-    def __init__(self, id, note, image):
+    def __init__(self, id, note, image="blankety"):
         self.userID = id
         self.note = note
         self.image = image
@@ -80,18 +80,20 @@ class User(db.Model):
     _dob = db.Column(db.Date)
     _hashmap = db.Column(db.JSON, unique=False, nullable=True)
     _role = db.Column(db.String(20), default="User", nullable=False)
+    images = db.Column(db.String, unique=False)
 
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade='all, delete', backref='users', lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, password="123qwerty", dob=date.today(), hashmap={}, role="User"):
+    def __init__(self, name, uid, password="123qwerty", dob=date.today(), hashmap={}, role="User",images="grrrrr"):
         self._name = name    # variables with self prefix become part of the object, 
         self._uid = uid
         self.set_password(password)
         self._dob = dob
         self._hashmap = hashmap
         self._role = role
+        self.images = images
 
     # a name getter method, extracts name from object
     @property
@@ -217,6 +219,15 @@ class User(db.Model):
         db.session.delete(self)
         db.session.commit()
         return None
+    def updatepfp(self,image64=""):
+        print(image64[:20],"grrrr"*10)
+        if(len(image64)>0):
+            self.images=image64
+        db.session.commit()
+        return self
+    
+    def getprofile(self):
+        return self.images
 
 
 """Database Creation and Testing """
@@ -224,6 +235,7 @@ class User(db.Model):
 
 # Builds working data for testing
 def initUsers():
+    print('here')
     with app.app_context():
         """Create database and tables"""
         db.create_all()
@@ -233,6 +245,7 @@ def initUsers():
         u3 = User(name='Alexander Graham Bell', uid='lex', hashmap={"job": "inventor", "company": "ATT"})
         u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9), hashmap={"job": "inventor", "company": "Navy"})
         users = [u1, u2, u3, u4]
+        print("here")
 
         """Builds sample user/note(s) data"""
         for user in users:
