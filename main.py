@@ -53,7 +53,7 @@ def before_request():
     print("-"*50)
     if allowed_origin in ['localhost:4200', 'http://127.0.0.1:4200', 'https://nighthawkcoders.github.io']:
         cors._origins = allowed_origin
-
+    cors._origins = allowed_origin
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
 

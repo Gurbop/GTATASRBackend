@@ -73,7 +73,36 @@ class UserAPI:
             user.delete() 
             # 204 is the status code for delete with no json response
             return f"Deleted user: {json}", 204 # use 200 to test with Postman
-         
+    class Images(Resource):
+        @token_required()
+        def post(self, _):
+            print("here","millyrock"*50)
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid'] # current user
+            body=request.get_json()
+            base64=body.get("Image")
+            print(base64[:10])
+            users = User.query.all()
+            for user in users:
+                print(user.uid,cur_user)
+                if user.uid == cur_user:
+                    print("finding")
+                    user.updatepfp(base64)
+            return jsonify("works")
+        
+        @token_required()
+        def get(self, _):
+            print('here')
+            # print("here")
+            # print("ANKITBADBOY"*20)
+            # token = request.cookies.get("jwt")
+            # cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid'] # current user
+            # users = User.query.all()
+            # for user in users:
+            #     if user.uid == cur_user:
+            #         return jsonify(user.getprofile())
+                
+                
     class _Security(Resource):
         def post(self):
             try:
@@ -132,5 +161,7 @@ class UserAPI:
             
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
+    api.add_resource(Images,'/images')
     api.add_resource(_Security, '/authenticate')
+
     
