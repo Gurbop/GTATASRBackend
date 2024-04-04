@@ -74,8 +74,7 @@ class UserAPI:
             user.delete() 
             # 204 is the status code for delete with no json response
             return f"Deleted user: {json}", 204 # use 200 to test with Postman
-         
-         
+        
     class Prediction(Resource):
         def post(self):
             # maintry:
