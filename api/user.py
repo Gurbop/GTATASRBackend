@@ -84,6 +84,10 @@ class UserAPI:
                 Extracurricular_Activities = int(body.get('Extracurricular_Activities'))
                 Model = datamodel()
                 prediction_result = Model.predict(gpa, SAT, Extracurricular_Activities)
+                if prediction_result == "Rejected": # switching data
+                    return jsonify("Accepted")
+                elif prediction_result == "Accepted":
+                    return jsonify("Rejected")
                 return jsonify(prediction_result)
             # except Exception as e:
                 # print("Prediction error:", str(e))  # Log the error
