@@ -2,6 +2,7 @@ import json, jwt
 from flask import Blueprint, request, jsonify, current_app, Response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
+from datamodel import datamodel
 from auth_middleware import token_required
 
 from model.users import User
@@ -73,6 +74,29 @@ class UserAPI:
             user.delete() 
             # 204 is the status code for delete with no json response
             return f"Deleted user: {json}", 204 # use 200 to test with Postman
+        
+    class Prediction(Resource):
+        def post(self):
+            # maintry:
+                body = request.get_json()
+                gpa = float(body.get('gpa'))
+                SAT = int(body.get('SAT'))
+                Extracurricular_Activities = int(body.get('Extracurricular_Activities'))
+                Model = datamodel()
+                prediction_result = Model.predict(gpa, SAT, Extracurricular_Activities)
+                if prediction_result == "Rejected": # switching data
+                    return jsonify("Accepted")
+                elif prediction_result == "Accepted":
+                    return jsonify("Rejected")
+                return jsonify(prediction_result)
+            # except Exception as e:
+                # print("Prediction error:", str(e))  # Log the error
+                # return {
+                #     "message": "Something went wrong during prediction!",
+                #     "error": str(e),
+                #     "data": None
+                # }, 500      
+
     class Images(Resource):
         @token_required()
         def post(self, _):
@@ -163,5 +187,5 @@ class UserAPI:
     api.add_resource(_CRUD, '/')
     api.add_resource(Images,'/images')
     api.add_resource(_Security, '/authenticate')
-
+    api.add_resource(Prediction, '/Prediction')
     
