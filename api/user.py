@@ -126,7 +126,7 @@ class UserAPI:
                 if user.uid == cur_user:
                     return jsonify(user.getprofile())
                 
-                
+            
     class _Security(Resource):
         def post(self):
             try:
@@ -182,10 +182,36 @@ class UserAPI:
                         "data": None
                 }, 500
 
-            
+    class AddFriend(Resource):
+        @token_required()
+        def post(self, _):
+            try:
+                # Get the friend's user ID from the request body
+                data = request.get_json()
+                friend_uid = data.get('friend_uid')
+
+                # Find the current user based on the JWT token
+                token = request.cookies.get("jwt")
+                current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+                current_user = User.query.filter_by(_uid=current_user_uid).first()
+
+                # Find the friend user based on the user ID
+                friend = User.query.filter_by(_uid=friend_uid).first()
+
+                # Check if the friend exists
+                if not friend:
+                    return {'message': 'Friend not found'}, 404
+
+                # Add the friend to the current user's friend list
+                current_user.add_friend(friend)
+
+                return {'message': 'Friend added successfully'}, 200
+
+            except Exception as e:
+                return {'message': str(e)}, 500        
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(Images,'/images')
     api.add_resource(_Security, '/authenticate')
     api.add_resource(Prediction, '/Prediction')
-    
+    api.add_resource(AddFriend, '/add-friend')
