@@ -51,7 +51,7 @@ def before_request():
     allowed_origin = request.headers.get('Origin')
     print(allowed_origin)
     print("-"*50)
-    if allowed_origin in ['localhost:4200', 'http://127.0.0.1:4200', 'https://nighthawkcoders.github.io']:
+    if allowed_origin in ['localhost:8086', 'http://127.0.0.1:8086', 'https://nighthawkcoders.github.io']:
         cors._origins = allowed_origin
     cors._origins = allowed_origin
 # Create an AppGroup for custom commands
@@ -111,7 +111,8 @@ def get_leaderboard():
 if __name__ == "__main__":
     # change name for testing
     print('here')
-    app.run(debug=True, host="0.0.0.0", port="8085")
+    app.run(debug=True, host="0.0.0.0", port="8086")
+
 # server always runs on the address http://127.0.0.1:8086/
 # http://127.0.0.1:8086/api/users/search
 # http://127.0.0.1:8086/api/users/design

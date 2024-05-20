@@ -18,8 +18,9 @@ class UserAPI:
         def post(self): # Create method
             ''' Read data for json body '''
             print("I MILLY ROCK")
+            print("here1111111")
             body = request.get_json()
-            
+            print("here1111112")
             ''' Avoid garbage in, error checking '''
             # validate name
             name = body.get('name')
@@ -30,6 +31,7 @@ class UserAPI:
             if uid is None or len(uid) < 2:
                 return {'message': f'User ID is missing, or is less than 2 characters'}, 400
             # look for password and dob
+            print("here1111111")
             password = body.get('password')
             dob = body.get('dob')
 
