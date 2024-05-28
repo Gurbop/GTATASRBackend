@@ -60,7 +60,7 @@ class Post(db.Model):
             "userID": self.userID,
             "note": self.note,
             "image": self.image,
-            "base64": str(file_encode)
+            "base64": str(file_encode), 
         }
 
 
@@ -207,7 +207,6 @@ class User(db.Model):
             "dob": self.dob,
             "age": self.age,
             "hashmap": self._hashmap,
-            # "posts": [post.read() for post in self.posts]
         }
 
     # CRUD update: updates user name, password, phone
