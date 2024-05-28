@@ -178,7 +178,7 @@ class User(db.Model):
         return self._role == "Admin"
     
     def getfriends(self):
-        return self.friends.split(',')[1:]
+        return list(set(self.friends.split(',')[1:]))
     
     def addfriend(self, friendname):
         self.friends+=','+str(friendname)
