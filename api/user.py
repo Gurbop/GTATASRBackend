@@ -327,7 +327,18 @@ class UserAPI:
             
             return jsonify(json_ready)
             
-            
+    class social(Resource):
+        @token_required()
+        def get(self,_): #get friend list
+            token = request.cookies.get("jwt")
+            current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users=User.query.all()
+            for user in users:
+                if(user.uid==current_user_uid):
+                    return jsonify(user.getfriends())
+                
+        
+        
             
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
@@ -335,3 +346,4 @@ class UserAPI:
     api.add_resource(_Security, '/authenticate')
     api.add_resource(Prediction, '/Prediction')
     api.add_resource(AddFriend, '/add-friend')
+    api.add_resource(social,'/social')
