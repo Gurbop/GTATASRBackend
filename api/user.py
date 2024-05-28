@@ -256,20 +256,6 @@ class UserAPI:
                     node_levels[user.uid]=maxvalues
             print(node_levels,"-----***"*10,personuid)
             return jsonify({'level':str(node_levels[personuid])})
-        def partition(arr, low, high, column_index):
-            pivot = arr[high][column_index]
-            i = low - 1
-            for j in range(low, high):
-                if arr[j][column_index] <= pivot:
-                    i += 1
-                    arr[i], arr[j] = arr[j], arr[i]
-            arr[i + 1], arr[high] = arr[high], arr[i + 1]
-            return i + 1
-        def quicksort(arr, low, high, column_index):
-            if low < high:
-                pi = partition(arr, low, high, column_index) # type: ignore
-                quicksort(arr, low, pi - 1, column_index) # type: ignore
-                quicksort(arr, pi + 1, high, column_index) # type: ignore
             
         @token_required()
         def get(self,_):
@@ -322,6 +308,21 @@ class UserAPI:
                 json_ready.append(appender2)
                 
             # quicksort
+            def partition(arr, low, high, column_index):
+                pivot = arr[high][column_index]
+                i = low - 1
+                for j in range(low, high):
+                    if arr[j][column_index] <= pivot:
+                        i += 1
+                        arr[i], arr[j] = arr[j], arr[i]
+                arr[i + 1], arr[high] = arr[high], arr[i + 1]
+                return i + 1
+            def quicksort(arr, low, high, column_index):
+                if low < high:
+                    pi = partition(arr, low, high, column_index) 
+                    quicksort(arr, low, pi - 1, column_index) 
+                    quicksort(arr, pi + 1, high, column_index) 
+            quicksort(json_ready,0,len(json_ready)-1,6)
             
             
             return jsonify(json_ready)
