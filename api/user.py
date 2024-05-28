@@ -205,7 +205,7 @@ class UserAPI:
                     return {'message': 'Friend not found'}, 404
 
                 # Add the friend to the current user's friend list
-                current_user.add_friend(friend)
+                current_user.addfriend(friend.uid)
 
                 return {'message': 'Friend added successfully'}, 200
 
