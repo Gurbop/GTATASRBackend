@@ -46,4 +46,4 @@ api.add_resource(PlayerResource, '/players/<int:player_id>')
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', port=8086, debug=True)
+    app.run(host='0.0.0.0', port=8092, debug=True)
