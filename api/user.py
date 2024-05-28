@@ -187,6 +187,7 @@ class UserAPI:
     class AddFriend(Resource):
         @token_required()
         def post(self, _):
+            print("in here")
             try:
                 # Get the friend's user ID from the request body
                 data = request.get_json()
@@ -205,15 +206,142 @@ class UserAPI:
                     return {'message': 'Friend not found'}, 404
 
                 # Add the friend to the current user's friend list
-                current_user.add_friend(friend)
+                print("Adding friend", friend.uid)
+                current_user.addfriend(friend.uid)
 
                 return {'message': 'Friend added successfully'}, 200
 
             except Exception as e:
                 return {'message': str(e)}, 500        
+        @token_required()
+        def put(self, _):
+            data = request.get_json()
+            personuid = data.get('useruid')
+            users = User.query.all()    # read/extract all users from database
+            friends={}
+            for user in users:
+                friends[user.uid]=[]
+            for user in users:
+                friends[user.uid]=user.getfriends()
+            token = request.cookies.get("jwt")
+            current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            visited = set()
+            level = [current_user_uid]
+            result = []
+            levels = []
+            node_levels = {current_user_uid: 0}  # Dictionary to store levels of each node
+            
+            current_level = 0
+
+            while level:
+                next_level = []
+                levels.append(level.copy())
+
+                while level:
+                    current_node = level.pop(0)
+
+                    if current_node not in visited:
+                        visited.add(current_node)
+                        result.append(current_node)
+
+                        for neighbor in friends[current_node]:
+                            if neighbor not in visited and neighbor not in next_level:
+                                next_level.append(neighbor)
+                                node_levels[neighbor] = current_level + 1  # Set level of neighbor
+
+                level = next_level
+                current_level += 1
+            maxvalues=max(node_levels.values())+1
+            for user in users:
+                if(user.uid not in node_levels.keys()):
+                    node_levels[user.uid]=maxvalues
+            return jsonify({'level':str(node_levels[personuid])})
+            
+        @token_required()
+        def get(self,_):
+            users = User.query.all()    # read/extract all users from database
+            friends={}
+            for user in users:
+                friends[user.uid]=[]
+            for user in users:
+                friends[user.uid]=user.getfriends()
+            token = request.cookies.get("jwt")
+            current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            visited = set()
+            level = [current_user_uid]
+            result = []
+            levels = []
+            node_levels = {current_user_uid: 0}  # Dictionary to store levels of each node
+            
+            current_level = 0
+
+            while level:
+                next_level = []
+                levels.append(level.copy())
+
+                while level:
+                    current_node = level.pop(0)
+
+                    if current_node not in visited:
+                        visited.add(current_node)
+                        result.append(current_node)
+
+                        for neighbor in friends[current_node]:
+                            if neighbor not in visited and neighbor not in next_level:
+                                next_level.append(neighbor)
+                                node_levels[neighbor] = current_level + 1  # Set level of neighbor
+
+                level = next_level
+                current_level += 1
+            maxvalues=max(node_levels.values())+1
+            for user in users:
+                if(user.uid not in node_levels.keys()):
+                    node_levels[user.uid]=maxvalues
+            json_ready=[]
+            for user in users:
+                value=user.read()
+                appender=list(value.values())
+                appender2=appender.copy()
+                appender2.append(node_levels[user.uid])
+                json_ready.append(appender2)
+                
+            # quicksort
+            def partition(arr, low, high, column_index):
+                pivot = arr[high][column_index]
+                i = low - 1
+                for j in range(low, high):
+                    if arr[j][column_index] <= pivot:
+                        i += 1
+                        arr[i], arr[j] = arr[j], arr[i]
+                arr[i + 1], arr[high] = arr[high], arr[i + 1]
+                return i + 1
+            def quicksort(arr, low, high, column_index):
+                if low < high:
+                    pi = partition(arr, low, high, column_index) 
+                    quicksort(arr, low, pi - 1, column_index) 
+                    quicksort(arr, pi + 1, high, column_index) 
+            quicksort(json_ready,0,len(json_ready)-1,6)
+            
+            
+            return jsonify(json_ready)
+            
+    class social(Resource):
+        @token_required()
+        def get(self,_): #get friend list
+            token = request.cookies.get("jwt")
+            current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users=User.query.all()
+            for user in users:
+                if(user.uid==current_user_uid):
+                    return jsonify(user.getfriends())
+                
+        
+        
+            
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(Images,'/images')
     api.add_resource(_Security, '/authenticate')
     api.add_resource(Prediction, '/Prediction')
     api.add_resource(AddFriend, '/add-friend')
+    api.add_resource(social,'/social')

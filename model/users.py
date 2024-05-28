@@ -60,7 +60,7 @@ class Post(db.Model):
             "userID": self.userID,
             "note": self.note,
             "image": self.image,
-            "base64": str(file_encode)
+            "base64": str(file_encode), 
         }
 
 
@@ -81,12 +81,13 @@ class User(db.Model):
     _hashmap = db.Column(db.JSON, unique=False, nullable=True)
     _role = db.Column(db.String(20), default="User", nullable=False)
     images = db.Column(db.String, unique=False)
+    friends=db.Column(db.String,unique=False)
 
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade='all, delete', backref='users', lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, password="123qwerty", dob=date.today(), hashmap={}, role="User",images="grrrrr"):
+    def __init__(self, name, uid, password="123qwerty", dob=date.today(), hashmap={}, role="User",images="grrrrr",friends='placehold'):
         self._name = name    # variables with self prefix become part of the object, 
         self._uid = uid
         self.set_password(password)
@@ -94,6 +95,7 @@ class User(db.Model):
         self._hashmap = hashmap
         self._role = role
         self.images = images
+        self.friends=friends
 
     # a name getter method, extracts name from object
     @property
@@ -174,6 +176,15 @@ class User(db.Model):
 
     def is_admin(self):
         return self._role == "Admin"
+    
+    def getfriends(self):
+        return list(set(self.friends.split(',')[1:]))
+    
+    def addfriend(self, friendname):
+        print("*&"*20)
+        self.friends+=','+str(friendname)
+        db.session.commit()
+        return "added"
 
     # CRUD create/add a new record to the table
     # returns self or None on error
@@ -197,7 +208,6 @@ class User(db.Model):
             "dob": self.dob,
             "age": self.age,
             "hashmap": self._hashmap,
-            # "posts": [post.read() for post in self.posts]
         }
 
     # CRUD update: updates user name, password, phone

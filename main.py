@@ -14,6 +14,7 @@ from api.covid import covid_api # Blueprint import api definition
 from api.joke import joke_api # Blueprint import api definition
 from api.user import user_api # Blueprint import api definition
 from api.player import player_api
+from api.recipe import recipe_api
 # database migrations
 from model.users import initUsers
 from model.players import initPlayers
@@ -30,6 +31,7 @@ app.register_blueprint(joke_api) # register api routes
 app.register_blueprint(covid_api) # register api routes
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(player_api)
+app.register_blueprint(recipe_api)
 app.register_blueprint(app_projects) # register app pages
 
 @app.errorhandler(404)  # catch for URL not found
@@ -113,7 +115,7 @@ if __name__ == "__main__":
     print('here')
     app.run(debug=True, host="0.0.0.0", port="8092")
 
-# server always runs on the address http://127.0.0.1:8086/
-# http://127.0.0.1:8086/api/users/search
-# http://127.0.0.1:8086/api/users/design
-# http://127.0.0.1:8086/api/users/authenticate
+# server always runs on the address http://127.0.0.1:8085/
+# http://127.0.0.1:8085/api/users/search
+# http://127.0.0.1:8085/api/users/design
+# http://127.0.0.1:8085/api/users/authenticate
