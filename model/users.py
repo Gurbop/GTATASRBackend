@@ -181,6 +181,7 @@ class User(db.Model):
         return list(set(self.friends.split(',')[1:]))
     
     def addfriend(self, friendname):
+        print("*&"*20)
         self.friends+=','+str(friendname)
         db.session.commit()
         return "added"

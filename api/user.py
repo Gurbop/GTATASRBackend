@@ -187,6 +187,7 @@ class UserAPI:
     class AddFriend(Resource):
         @token_required()
         def post(self, _):
+            print("in here")
             try:
                 # Get the friend's user ID from the request body
                 data = request.get_json()
@@ -205,6 +206,7 @@ class UserAPI:
                     return {'message': 'Friend not found'}, 404
 
                 # Add the friend to the current user's friend list
+                print("Adding friend", friend.uid)
                 current_user.addfriend(friend.uid)
 
                 return {'message': 'Friend added successfully'}, 200
@@ -221,7 +223,6 @@ class UserAPI:
                 friends[user.uid]=[]
             for user in users:
                 friends[user.uid]=user.getfriends()
-            print(friends)
             token = request.cookies.get("jwt")
             current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
             visited = set()
@@ -254,7 +255,6 @@ class UserAPI:
             for user in users:
                 if(user.uid not in node_levels.keys()):
                     node_levels[user.uid]=maxvalues
-            print(node_levels,"-----***"*10,personuid)
             return jsonify({'level':str(node_levels[personuid])})
             
         @token_required()
@@ -265,7 +265,6 @@ class UserAPI:
                 friends[user.uid]=[]
             for user in users:
                 friends[user.uid]=user.getfriends()
-            print(friends)
             token = request.cookies.get("jwt")
             current_user_uid = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
             visited = set()
@@ -298,7 +297,6 @@ class UserAPI:
             for user in users:
                 if(user.uid not in node_levels.keys()):
                     node_levels[user.uid]=maxvalues
-            print(node_levels)
             json_ready=[]
             for user in users:
                 value=user.read()
