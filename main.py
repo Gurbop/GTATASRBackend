@@ -115,7 +115,7 @@ if __name__ == "__main__":
     print('here')
     app.run(debug=True, host="0.0.0.0", port="8092")
 
-# server always runs on the address http://127.0.0.1:8085/
-# http://127.0.0.1:8085/api/users/search
-# http://127.0.0.1:8085/api/users/design
-# http://127.0.0.1:8085/api/users/authenticate
+# server always runs on the address http://127.0.0.1:8092/
+# http://127.0.0.1:8092/api/users/search
+# http://127.0.0.1:8092/api/users/design
+# http://127.0.0.1:8092/api/users/authenticate
