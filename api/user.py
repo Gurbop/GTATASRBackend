@@ -321,10 +321,12 @@ class UserAPI:
                     quicksort(arr, low, pi - 1, column_index) 
                     quicksort(arr, pi + 1, high, column_index) 
             quicksort(json_ready,0,len(json_ready)-1,6)
-            
-            
+
+            def quicksort_2d(arr, column_index):
+                for i in range(len(arr)):
+                    quicksort(arr, 0, len(arr) - 1, column_index)    
             return jsonify(json_ready)
-            
+  
     class social(Resource):
         @token_required()
         def get(self,_): #get friend list
